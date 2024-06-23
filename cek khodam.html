@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yoga Pratama | Khodam</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            font-family: Arial, sans-serif;
+            background: url('bg_khodam.jpg') no-repeat center center fixed; 
+            background-size: cover;
+            color: rgb(252, 251, 251);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1;
+        }
+
+        .container {
+            z-index: 2;
+            text-align: center;
+        }
+
+        .container h1 {
+            margin-bottom: 0;
+        }
+
+        .input-box {
+            background: rgba(230, 255, 3, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        .input-box input[type="text"] {
+            padding: 10px;
+            width: 200px;
+            border: none;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        .input-box button {
+            padding: 10px 20px;
+            background-color: #000000;
+            color: rgb(255, 255, 255);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .input-box button:hover {
+            background-color: #5f5f5f;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 10px;
+            text-align: center;
+            width: 100%;
+            color: white;
+        }
+
+        .footer a {
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+    <div class="container">
+        <h1>Cek <span style="color: #fafafa;">Khodam</span></h1>
+        <div class="input-box">
+            <input type="text" id="nameInput" placeholder="Masukkan nama">
+            <button onclick="cekKhodam()">Cek</button>
+        </div>
+        <div id="result"></div>
+    </div>
+    <div class="footer">
+        <p><a>@YogaPratama</a></p>
+    </div>
+    <script>
+        const khodams = [
+            "Si Kucing Imut", "Si Kelinci Gembul", "Si Panda Lucu", "Si Koala Menggemaskan", "Si Beruang Madu", 
+            "Si Tupai Kecil", "Si Hamster Gebu", "Si Burung Hantu Cilik", "Si Katak Ceria", "Si Anjing Setia",
+            "Si Bebek Kocak", "Si Ayam Jenaka", "Si Kuda Poni", "Si Babi Lucu", "Si Domba Imut",
+            "Si Burung Pipit", "Si Gajah Kecil", "Si Jerapah Tinggi", "Si Zebra Unik", "Si Singa Cilik",
+            "Si Harimau Kecil", "Si Naga Mini", "Si Kura-Kura Lamban", "Si Landak Imut", "Si Kuda Laut",
+            "Si Lumba-Lumba", "Si Ikan Mas", "Si Kepiting", "Si Bintang Laut", "Si Kupu-Kupu",
+            "Si Lebah Madu", "Si Capung", "Si Kumbang", "Si Semut", "Si Ulat Bulu",
+            "Si Katak", "Si Bunglon", "Si Kadal", "Si Iguana", "Si Burung Beo",
+            "Si Elang", "Si Merpati", "Si Burung Cendrawasih", "Si Flamingo", "Si Angsa",
+            "Si Pelikan", "Si Burung Camar", "Si Burung Kakaktua", "Si Burung Kenari", "Si Ikan Paus",
+            "Si Ikan Pari", "Si Penyu", "Si Ular Piton", "Si Ular Sanca", "Si Ular Kobra",
+            "Si Bunglon", "Si Biawak", "Si Tokek", "Si Komodo", "Si Buaya",
+            "Si Aligator", "Si Belut", "Si Lele", "Si Gabus", "Si Mujair",
+            "Si Gurame", "Si Patin", "Si Sarden", "Si Makarel", "Si Teri",
+            "Si Bandeng", "Si Tuna", "Si Tongkol", "Si Cakalang", "Si Pari",
+            "Si Lumba-lumba", "Si Hiu", "Si Paus Biru", "Si Narwhal", "Si Dugong",
+            "Si Anjing Laut", "Si Singa Laut", "Si Kuda Nil", "Si Badak", "Si Gajah",
+            "Si Banteng", "Si Kerbau", "Si Sapi", "Si Kambing", "Si Domba",
+            "Si Rusa", "Si Kijang", "Si Antelope", "Si Gazelle", "Si Flamingo",
+            "Si Pelikan", "Si Burung Camar", "Si Burung Kenari", "Si Burung Lovebird", "Si Burung Kakatua",
+            "Si Burung Nuri", "Si Burung Merak", "Si Burung Beo", "Si Burung Gagak", "Si Burung Jalak",
+            "Si Burung Elang", "Si Burung Rajawali", "Si Burung Garuda", "Si Burung Hantu", "Si Burung Tengkek",
+            "Si Burung Betet", "Si Burung Kakapo", "Si Burung Kiwi", "Si Burung Dodo", "Si Burung Cenderawasih",
+            "Si Burung Maleo", "Si Burung Kasuari", "Si Burung Emu", "Si Burung Unta", "Si Burung Kenari",
+            "Si Burung Perkutut", "Si Burung Gelatik", "Si Burung Pipit", "Si Burung Gereja", "Si Burung Merpati",
+            "Si Burung Dara", "Si Burung Walet", "Si Burung Sriti", "Si Burung Layang-layang", "Si Burung Elang Bondol",
+            "Si Burung Ciliwung", "Si Burung Kutilang", "Si Burung Jalak Bali", "Si Burung Cendrawasih", "Si Burung Nuri Kepala Hitam",
+            "Si Burung Kakatua Raja", "Si Burung Kenari", "Si Burung Lovebird", "Si Burung Paruh Bengkok", "Si Burung Finch",
+            "Si Burung Kolibri", "Si Burung Hummingbird", "Si Burung Robin", "Si Burung Murai Batu", "Si Burung Cucak Ijo",
+            "Si Burung Ciblek", "Si Burung Pleci", "Si Burung Decu", "Si Burung Anis Merah", "Si Burung Jalak Suren",
+            "Si Burung Trucukan", "Si Burung Kacer", "Si Burung Tledekan", "Si Burung Gelatik Wingko", "Si Burung Srigunting",
+            "Si Burung Kedasih", "Si Burung Sepah Raja", "Si Burung Cendrawasih", "Si Burung Luntur Kasumba", "Si Burung Madu",
+            "Si Burung Tekukur", "Si Burung Merpati Pos", "Si Burung Derkuku", "Si Burung Walik", "Si Burung Pergam",
+            "Si Burung Serindit", "Si Burung Kakatua Jambul Kuning", "Si Burung Nuri Merah", "Si Burung Betet", "Si Burung Bayan",
+            "Si Burung Merbah", "Si Burung Kepodang", "Si Burung Sikep Madu", "Si Burung Tengkek Buto", "Si Burung Cekakak Sungai",
+            "Si Burung Raja Udang", "Si Burung Kinjeng", "Si Burung Kedasih", "Si Burung Sepah", "Si Burung Prenjak",
+            "Si Burung Perenjak", "Si Burung Gelatik", "Si Burung Gereja", "Si Burung Branjangan", "Si Burung Ciung Batu",
+            "Si Burung Kutilang", "Si Burung Pentet", "Si Burung Cendet", "Si Burung Cica Matahari", "Si Burung Poksay"
+        ];
+
+        function generateKhodam(name) {
+            // Menghasilkan indeks berdasarkan panjang nama dan kode karakter
+            let hash = 0;
+            for (let i = 0; i < name.length; i++) {
+                hash = name.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            const index = Math.abs(hash % khodams.length);
+            return khodams[index];
+        }
+
+        function cekKhodam() {
+            const name = document.getElementById("nameInput").value.trim().toLowerCase();
+            const result = document.getElementById("result");
+
+            if (name) {
+                const khodam = generateKhodam(name);
+                result.innerHTML = `<p>Khodam Anda adalah ${khodam}</p>`;
+            } else {
+                result.innerHTML = "<p>Masukkan nama untuk mengetahui khodam Anda.</p>";
+            }
+        }
+
+        function supportMe() {
+            window.location.href = "https://trakteer.id/username";
+        }
+    </script>
+</body>
+</html>
